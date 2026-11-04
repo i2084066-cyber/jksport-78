@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="no-referrer" />
-  <title>JK LIVE TV — Watch Live Cricket & TV Channels</title>
-  <link id="dynamic-favicon" rel="icon" href="https://cdn-icons-png.flaticon.com/512/2989/2989838.png" />
-
+  <title>JK LIVE TV — Admin Panel & Live Stream Preview</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -15,725 +13,537 @@
   <style>
     :root {
       --bg-main: #070709;
-      --bg-card: #121216;
-      --bg-card-hover: #1a1a22;
-      --bg-pill: #1a1a20;
+      --bg-card: #121218;
+      --bg-input: #1a1a24;
       --accent: #ff4514;
-      --accent-glow: rgba(255, 69, 20, 0.38);
-      --accent-border: #c2410c;
-      --live-red: #ef4444;
+      --success: #10b981;
+      --danger: #ef4444;
       --text-white: #ffffff;
-      --text-muted: #71717a;
       --text-sub: #a1a1aa;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --radius-player: 16px;
-      --radius-card: 14px;
-      --radius-btn: 11px;
+      --border: rgba(255, 255, 255, 0.09);
+      --radius: 12px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-main);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-main);
       color: var(--text-white);
       min-height: 100vh;
-      overflow-x: hidden;
-      padding-bottom: 45px;
+      padding-bottom: 60px;
     }
 
-    /* Top Header (FREEDEKHO Style) */
-    .app-header {
+    .admin-header {
+      background: #0d0d12;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 100;
-      background-color: rgba(7, 7, 9, 0.96);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 69, 20, 0.28);
-      padding: 13px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand-logo {
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-    .brand-logo .part-white { color: #ffffff; }
-    .brand-logo .part-orange { color: var(--accent); }
-    .brand-logo .brand-dot {
-      width: 6px;
-      height: 6px;
-      background-color: var(--accent);
-      border-radius: 50%;
-      margin-left: 4px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .menu-btn {
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      font-size: 22px;
-      cursor: pointer;
-      padding: 4px 6px;
-    }
-
-    /* Announcement Banner */
-    .top-alert-bar {
-      background: linear-gradient(90deg, rgba(255,69,20,0.2), rgba(255,69,20,0.05));
-      border-bottom: 1px solid rgba(255,69,20,0.3);
-      padding: 9px 16px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: #fed7aa;
-      display: none;
-      align-items: center;
-      gap: 8px;
-    }
-    .top-alert-bar.show {
-      display: flex;
-    }
-
-    .main-wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 14px 15px;
-    }
-
-    /* Top Channel Bar: [<- Back] [• LIVE] Title */
-    .channel-top-bar {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin-bottom: 12px;
       flex-wrap: wrap;
-    }
-
-    .btn-back {
-      background-color: var(--bg-pill);
-      border: 1px solid var(--border-subtle);
-      color: #d4d4d8;
-      padding: 7px 13px;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .badge-live-top {
-      background-color: rgba(220, 38, 38, 0.25);
-      border: 1px solid rgba(239, 68, 68, 0.5);
-      color: #f87171;
-      padding: 6px 11px;
-      border-radius: 8px;
-      font-size: 11.5px;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-transform: uppercase;
-    }
-    .badge-live-top .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: #ef4444;
-      animation: blinkDot 1.2s infinite;
-    }
-    @keyframes blinkDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(1.3); }
-    }
-
-    .active-channel-heading {
-      font-size: 18px;
-      font-weight: 800;
-      color: #ffffff;
-      flex: 1;
-      min-width: 120px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ==============================================================
-     * IN-APP UNIVERSAL PLAYER + FULL ROTATE LANDSCAPE MODE
-     * ============================================================== */
-    .player-box {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background-color: #000;
-      border-radius: var(--radius-player);
-      overflow: hidden;
-      border: 1.5px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85);
-      margin-bottom: 14px;
-      transition: all 0.25s ease;
-    }
-
-    /* Fullscreen normal mode */
-    .player-box.in-app-fullscreen {
-      position: fixed !important;
-      inset: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      max-width: none !important;
-      aspect-ratio: auto !important;
-      border-radius: 0 !important;
-      border: none !important;
-      z-index: 99999 !important;
-      margin: 0 !important;
-      background: #000 !important;
-    }
-
-    /* Forced 90-Degree Landscape Rotate Mode (Works on ANY phone even if rotation is locked!) */
-    .player-box.forced-landscape-rotate {
-      position: fixed !important;
-      top: 50% !important;
-      left: 50% !important;
-      width: 100vh !important;
-      height: 100vw !important;
-      transform: translate(-50%, -50%) rotate(90deg) !important;
-      aspect-ratio: auto !important;
-      border-radius: 0 !important;
-      border: none !important;
-      z-index: 99999 !important;
-      margin: 0 !important;
-      background: #000 !important;
-    }
-
-    .player-box video,
-    .player-box iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: none;
-      background: #000;
-    }
-    .player-box video.active-engine,
-    .player-box iframe.active-engine {
-      display: block;
-    }
-
-    /* Video Fit & Zoom Modes */
-    .player-box.fit-cover video { object-fit: cover !important; }
-    .player-box.fit-fill video { object-fit: fill !important; }
-    .player-box.zoom-125 video { transform: scale(1.25); }
-
-    /* Floating Controls Inside Fullscreen / Rotate Mode */
-    .fs-floating-controls {
-      position: absolute;
-      top: 14px;
-      right: 16px;
-      z-index: 100000;
-      display: none;
-      gap: 8px;
-    }
-    .player-box.in-app-fullscreen .fs-floating-controls,
-    .player-box.forced-landscape-rotate .fs-floating-controls {
-      display: flex;
-    }
-    .fs-ctrl-pill {
-      background: rgba(15, 15, 20, 0.85);
-      border: 1.5px solid var(--accent);
-      color: #fff;
-      padding: 8px 14px;
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-    }
-
-    /* Live Status Badge inside Player Corner (Hides Raw URL) */
-    .in-player-live-tag {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: rgba(220, 38, 38, 0.9);
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 10.5px;
-      font-weight: 800;
-      z-index: 22;
-      pointer-events: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Tap to Unmute Floating Button */
-    .unmute-pill {
-      position: absolute;
-      bottom: 58px;
-      left: 14px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      z-index: 30;
-      display: none;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.7);
-    }
-    .unmute-pill.show { display: inline-flex; }
-
-    /* Loading Overlay */
-    .player-loader {
-      position: absolute;
-      inset: 0;
-      background: rgba(7, 7, 9, 0.82);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 20;
-      text-align: center;
-      padding: 20px;
-      pointer-events: none;
-    }
-    .player-loader.active { display: flex; }
-    .loader-ring {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255, 69, 20, 0.25);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 10px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Action Row Below Player: [Server 1] [Server 2] --- [Rotate] [Fullscreen] */
-    .player-action-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .server-buttons-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn-server {
-      background-color: #141418;
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      color: #a1a1aa;
-      padding: 10px 16px;
-      border-radius: var(--radius-btn);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-server.active {
-      background: linear-gradient(135deg, #ff511a 0%, #e63900 100%);
-      border-color: #ff6a3d;
-      color: #ffffff;
-      box-shadow: 0 4px 16px var(--accent-glow);
-    }
-
-    .right-player-controls {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
-
-    .btn-fullscreen-orange {
-      background-color: rgba(255, 69, 20, 0.1);
-      border: 1.5px solid var(--accent-border);
-      color: var(--accent);
-      padding: 10px 14px;
-      border-radius: var(--radius-btn);
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: 0.2s;
-    }
-    .btn-fullscreen-orange:hover {
-      background-color: var(--accent);
-      color: #ffffff;
-    }
-
-    /* Section Headings */
-    .section-label-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      margin-top: 8px;
-    }
-    .section-label {
-      font-size: 13.5px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    /* FEATURED LIVE MATCH THUMBNAIL BANNERS */
-    .featured-banners-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-    .match-banner-card {
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      overflow: hidden;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.22s ease;
-    }
-    .match-banner-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--accent);
-      box-shadow: 0 10px 25px rgba(255, 69, 20, 0.2);
-    }
-    .match-banner-card.active-card {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(255, 69, 20, 0.35);
-    }
-    .match-thumb-wrap {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #000;
-      position: relative;
-      overflow: hidden;
-    }
-    .match-thumb-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .match-live-tag {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #dc2626;
-      color: #fff;
-      font-size: 10.5px;
-      font-weight: 800;
-      padding: 4px 9px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-    .match-play-icon {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.28);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-      color: #fff;
-    }
-    .match-banner-info {
-      padding: 11px 13px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       gap: 10px;
     }
-    .match-banner-title {
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #fff;
+    .admin-logo {
+      font-size: 20px;
+      font-weight: 900;
     }
-    .match-banner-sub {
-      font-size: 11px;
-      color: var(--accent);
+    .admin-logo span { color: var(--accent); }
+
+    .tabs-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 14px 20px;
+      background: #0b0b0f;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      padding: 10px 16px;
+      border-radius: 9px;
+      font-size: 13px;
       font-weight: 700;
-      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
     }
 
-    /* 2-Column Channel Cards Grid */
-    .channels-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 11px;
-      margin-bottom: 24px;
+    .container {
+      max-width: 1120px;
+      margin: 20px auto;
+      padding: 0 16px;
     }
 
-    .channel-item-card {
-      background-color: var(--bg-card);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      padding: 11px;
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
-      gap: 11px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      min-height: 76px;
-    }
-    .channel-item-card:hover {
-      background-color: var(--bg-card-hover);
-    }
-    .channel-item-card.active-card {
-      border-color: var(--accent);
-      background-color: rgba(255, 69, 20, 0.08);
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .channel-logo-box {
-      width: 52px;
-      height: 52px;
-      border-radius: 10px;
-      background-color: #09090b;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    /* LIVE PREVIEW PLAYER BOX INSIDE ADMIN PANEL */
+    .admin-preview-stage {
+      width: 100%;
+      max-width: 640px;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 12px;
+      border: 2px solid var(--accent);
       overflow: hidden;
-      flex-shrink: 0;
+      margin-bottom: 18px;
+      position: relative;
+      display: none;
     }
-    .channel-logo-box img {
+    .admin-preview-stage.show {
+      display: block;
+    }
+    .admin-preview-stage video,
+    .admin-preview-stage iframe {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      border: none;
+      display: none;
+    }
+    .admin-preview-stage video.active,
+    .admin-preview-stage iframe.active {
+      display: block;
     }
 
-    .channel-text-box {
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .form-group {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      min-width: 0;
-      flex: 1;
+      gap: 6px;
     }
-    .channel-name {
-      font-size: 14px;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.25;
-      margin-bottom: 4px;
-    }
-    .channel-cat {
-      font-size: 10.5px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    /* Social Row */
-    .social-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 20px;
-    }
-    .soc-pill {
-      flex: 1;
-      min-width: 110px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      color: #fff;
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
       font-size: 12px;
       font-weight: 700;
-      text-decoration: none;
+      color: var(--text-sub);
+      text-transform: uppercase;
+    }
+    .form-input, .form-select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 11px 13px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      outline: none;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent);
+    }
+
+    .thumb-preview-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .thumb-preview-img {
+      width: 120px;
+      height: 68px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #000;
+      border: 1px solid var(--accent);
+    }
+
+    .btn {
+      padding: 11px 18px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      background: #16161d;
-      border: 1px solid var(--border-subtle);
+      gap: 8px;
+      text-decoration: none;
     }
-
-    /* Slide-Out Drawer */
-    .drawer-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.78);
-      z-index: 200;
-      display: none;
-      justify-content: flex-end;
-    }
-    .drawer-backdrop.open { display: flex; }
-    .drawer-panel {
-      width: 300px;
-      max-width: 85vw;
-      background: #0e0e13;
-      border-left: 1px solid var(--border-subtle);
-      height: 100%;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      overflow-y: auto;
-    }
-    .drawer-search {
-      width: 100%;
-      background: #181820;
-      border: 1px solid var(--border-subtle);
+    .btn-save {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #fff;
-      padding: 10px 13px;
-      border-radius: 9px;
-      font-size: 13px;
-      outline: none;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
     }
-    .drawer-cat-btn {
-      width: 100%;
-      background: #15151c;
-      border: 1px solid transparent;
-      color: #d4d4d8;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
-      margin-bottom: 6px;
-    }
-    .drawer-cat-btn.active {
-      border-color: var(--accent);
+    .btn-orange {
+      background: var(--accent);
       color: #fff;
-      background: rgba(255, 69, 20, 0.15);
     }
+    .btn-dark {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: #fff;
+    }
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .btn-sm { padding: 8px 13px; font-size: 12px; }
 
-    #toast-box {
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    th { color: var(--text-sub); font-size: 11px; text-transform: uppercase; }
+
+    /* Big Green Success Banner */
+    #success-banner {
       position: fixed;
-      bottom: 20px;
+      top: 18px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 100001;
-    }
-    .toast-msg {
-      background: #18181f;
-      border: 1px solid var(--accent);
+      background: #059669;
+      border: 2px solid #34d399;
       color: #fff;
-      padding: 9px 16px;
-      border-radius: 99px;
-      font-size: 12.5px;
-      font-weight: 700;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.7);
-      margin-top: 6px;
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      z-index: 999;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+    }
+    #success-banner.show { display: flex; }
+
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-  <!-- Header -->
-  <header class="app-header">
-    <a class="brand-logo" onclick="filterCategory('All')">
-      <span id="site-title-white" class="part-white">JK</span><span id="site-title-orange" class="part-orange">LIVETV</span><span class="brand-dot"></span>
-    </a>
-    <div class="header-actions">
-      <button class="menu-btn" onclick="toggleDrawer(true)">
-        <i class="fa-solid fa-bars"></i>
-      </button>
+  <!-- Big Green Save Confirmation Popup -->
+  <div id="success-banner">
+    <i class="fa-solid fa-circle-check" style="font-size:20px;"></i>
+    <span id="success-banner-text">Saved Successfully! Synced to Firebase & User Panel.</span>
+  </div>
+
+  <!-- Top Header -->
+  <header class="admin-header">
+    <div>
+      <div class="admin-logo">JK <span>LIVETV</span> • ADMIN PANEL</div>
+      <div style="font-size:11px; color:#10b981; font-weight:700;">● Connected: sports-26d61 (asia-southeast1)</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <a href="index.html" target="_blank" class="btn btn-orange btn-sm">
+        <i class="fa-solid fa-eye"></i> Open User Panel Live
+      </a>
     </div>
   </header>
 
-  <!-- Live Broadcast Alert Banner from Admin -->
-  <div id="top-alert-bar" class="top-alert-bar">
-    <i class="fa-solid fa-bullhorn" style="color:var(--accent);"></i>
-    <span id="top-alert-text"></span>
+  <!-- Navigation Tabs -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="openTab('sec-channels', this)">
+      <i class="fa-solid fa-tv"></i> 1. Add Match / Channels & Live Preview
+    </button>
+    <button class="tab-btn" onclick="openTab('sec-settings', this)">
+      <i class="fa-solid fa-sliders"></i> 2. Site Settings & Live Alert
+    </button>
+    <button class="tab-btn" onclick="openTab('sec-socials', this)">
+      <i class="fa-brands fa-telegram"></i> 3. Telegram / WhatsApp Links
+    </button>
   </div>
 
-  <!-- Main Content -->
-  <main class="main-wrap">
+  <div class="container">
 
-    <!-- Top Channel Navigation Bar: [<- Back] [• LIVE] Title -->
-    <div class="channel-top-bar">
-      <button class="btn-back" onclick="document.getElementById('channels-section').scrollIntoView({behavior:'smooth'})">
-        <i class="fa-solid fa-arrow-left"></i> Back
-      </button>
-      <div class="badge-live-top">
-        <span class="dot"></span>
-        <span id="live-pill-text">LIVE</span>
+    <!-- SECTION 1: ADD / EDIT LIVE MATCH BANNER OR TV CHANNEL -->
+    <section id="sec-channels" class="tab-section active">
+      <div class="card">
+        <div class="card-title">
+          <span id="form-heading">➕ Add Live Match Banner (e.g. IND vs NZ) or TV Channel</span>
+          <button type="button" class="btn btn-dark btn-sm" onclick="clearForm()">New / Reset Form</button>
+        </div>
+
+        <!-- BUILT-IN ADMIN LIVE STREAM PREVIEW PLAYER -->
+        <div id="admin-preview-box" class="admin-preview-stage">
+          <video id="admin-preview-video" controls autoplay playsinline></video>
+          <iframe id="admin-preview-iframe" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+        <form id="stream-form" onsubmit="saveStreamItem(event)">
+          <input type="hidden" id="item-id" />
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Match or Channel Title *</label>
+              <input type="text" id="item-title" class="form-input" placeholder="e.g. INDIA vs NEW ZEALAND LIVE or Sony TEN 3 HD" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Display Style on User Panel *</label>
+              <select id="item-style" class="form-select">
+                <option value="banner">🔥 Big Live Match Banner (16:9 Thumbnail — Tap to Play)</option>
+                <option value="channel">📺 Standard Channel Card (2-Column Grid)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Stream Link Mode (M3U8 or Any Live Link) *</label>
+              <select id="item-stream-type" class="form-select">
+                <option value="auto">⚡ Auto Detect (Plays M3U8, MP4 & PHP/Web Links Automatically)</option>
+                <option value="m3u8">📡 Force M3U8 HLS Player Mode</option>
+                <option value="embed">🌐 Force Web / PHP Embed Player Mode</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="item-category" class="form-select">
+                <option value="LIVE MATCH">LIVE MATCH</option>
+                <option value="SPORTS">SPORTS</option>
+                <option value="ENTERTAINMENT">ENTERTAINMENT</option>
+                <option value="MOVIES">MOVIES</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Display Position Order (1 = Top)</label>
+              <input type="number" id="item-order" class="form-input" value="1" min="1" />
+            </div>
+
+            <!-- THUMBNAIL URL OR GALLERY UPLOAD -->
+            <div class="form-group full">
+              <label class="form-label">Thumbnail Image URL OR Choose Photo from Gallery *</label>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <input type="text" id="item-thumb" class="form-input" style="flex:1; min-width:220px;" placeholder="Paste Image URL or upload photo ->" oninput="updateThumbPreview(this.value)" required />
+                <label class="btn btn-dark" style="cursor:pointer;">
+                  <i class="fa-solid fa-image"></i> Choose Photo from Gallery
+                  <input type="file" accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
+                </label>
+              </div>
+              <div class="thumb-preview-row">
+                <img id="thumb-preview" class="thumb-preview-img" src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80" alt="Preview" />
+                <span style="font-size:12px; color:var(--text-sub);">
+                  👆 Live Thumbnail Preview. User Panel par is photo par tap karte hi Server 1 automatic चालू ho jayega!
+                </span>
+              </div>
+            </div>
+
+            <!-- SERVER 1 LINK + LIVE PREVIEW BUTTON -->
+            <div class="form-group full">
+              <label class="form-label">Server 1 Live Link (Paste ANY .m3u8, .mp4, or play.php Live Link) *</label>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="url" id="item-srv1" class="form-input" style="flex:1; min-width:220px;" placeholder="https://..." required />
+                <button type="button" class="btn btn-orange btn-sm" onclick="testLiveStreamInAdmin(document.getElementById('item-srv1').value)">
+                  <i class="fa-solid fa-play"></i> Preview Server 1 Live
+                </button>
+              </div>
+            </div>
+
+            <!-- SERVER 2 LINK + LIVE PREVIEW BUTTON -->
+            <div class="form-group full">
+              <label class="form-label">Server 2 Live Link (Backup .m3u8 or play.php Link)</label>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="url" id="item-srv2" class="form-input" style="flex:1; min-width:220px;" placeholder="https://..." />
+                <button type="button" class="btn btn-orange btn-sm" onclick="testLiveStreamInAdmin(document.getElementById('item-srv2').value)">
+                  <i class="fa-solid fa-play"></i> Preview Server 2 Live
+                </button>
+              </div>
+            </div>
+
+            <!-- SERVER 3 LINK -->
+            <div class="form-group full">
+              <label class="form-label">Server 3 Live Link (Optional Extra Server)</label>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="url" id="item-srv3" class="form-input" style="flex:1; min-width:220px;" placeholder="Optional 3rd Server Link" />
+                <button type="button" class="btn btn-dark btn-sm" onclick="testLiveStreamInAdmin(document.getElementById('item-srv3').value)">
+                  <i class="fa-solid fa-play"></i> Preview Server 3
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-save">
+              <i class="fa-solid fa-floppy-disk"></i> SAVE & PUBLISH TO USER PANEL
+            </button>
+          </div>
+        </form>
       </div>
-      <h1 id="current-channel-title" class="active-channel-heading">INDIA vs NEW ZEALAND — LIVE HD</h1>
-    </div>
 
-    <!-- IN-APP UNIVERSAL PLAYER BOX (Plays M3U8, MP4, PHP & Web Links right inside the app!) -->
-    <div id="player-box" class="player-box">
-      <!-- Clean Live Badge (No Raw Link Shown Anywhere) -->
-      <div class="in-player-live-tag">
-        <span style="width:6px;height:6px;background:#fff;border-radius:50%;"></span> LIVE HD
+      <!-- LIST OF ALL SAVED MATCHES & CHANNELS -->
+      <div class="card">
+        <div class="card-title">
+          <span>All Active Matches & Channels</span>
+          <button class="btn btn-danger btn-sm" onclick="restoreDefaults()">Reset Default Demo List</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Thumbnail</th>
+                <th>Title & Type</th>
+                <th>Preview Stream</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="streams-tbody"></tbody>
+          </table>
+        </div>
       </div>
+    </section>
 
-      <!-- Floating Controls when in Fullscreen / Rotate Mode -->
-      <div class="fs-floating-controls">
-        <button class="fs-ctrl-pill" onclick="cycleZoomFit()">
-          <i class="fa-solid fa-up-right-and-down-left-from-center"></i> Fit
-        </button>
-        <button class="fs-ctrl-pill" onclick="toggleForcedRotate()">
-          <i class="fa-solid fa-rotate"></i> Rotate
-        </button>
-        <button class="fs-ctrl-pill" style="background:var(--accent);" onclick="exitAllFullscreen()">
-          <i class="fa-solid fa-compress"></i> Exit Full
-        </button>
+    <!-- SECTION 2: SITE SETTINGS & LIVE ANNOUNCEMENT -->
+    <section id="sec-settings" class="tab-section">
+      <div class="card">
+        <div class="card-title">Website Name, Theme Color & Top Live Announcement</div>
+        <form onsubmit="saveSettingsForm(event)" class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Logo First Part (White Text)</label>
+            <input type="text" id="set-white" class="form-input" value="JK" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Logo Second Part (Orange Text)</label>
+            <input type="text" id="set-orange" class="form-input" value="LIVETV" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Theme Highlight Color</label>
+            <input type="color" id="set-color" class="form-input" value="#ff4514" style="height:44px; padding:4px;" />
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Top Live Announcement Banner (Shows at top of User Panel)</label>
+            <input type="text" id="set-alert" class="form-input" placeholder="🔥 IND vs NZ Live Streaming Started on Server 1 & Server 2!" />
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-save">
+              <i class="fa-solid fa-check"></i> SAVE SETTINGS & UPDATE USER PANEL
+            </button>
+          </div>
+        </form>
       </div>
+    </section>
 
-      <!-- Unmute Floating Pill -->
-      <button id="unmute-pill" class="unmute-pill" onclick="unmuteLiveVideo()">
-        <i class="fa-solid fa-volume-high"></i> Tap for Sound
-      </button>
-
-      <!-- Engine 1: HTML5 HLS Video (No crossorigin attribute so ALL M3U8 links play without CORS block!) -->
-      <video id="hls-video" controls autoplay playsinline webkit-playsinline></video>
-
-      <!-- Engine 2: In-App Sandboxed / Embed Player for M3U8 Fallback & play.php links -->
-      <iframe id="embed-iframe" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-
-      <!-- Loading Spinner -->
-      <div id="player-loader" class="player-loader">
-        <div class="loader-ring"></div>
-        <p id="loader-msg" style="font-size:13px; font-weight:700;">Loading Live Match...</p>
+    <!-- SECTION 3: SOCIAL MEDIA LINKS -->
+    <section id="sec-socials" class="tab-section">
+      <div class="card">
+        <div class="card-title">Update Telegram & WhatsApp Buttons</div>
+        <form onsubmit="saveSocialsForm(event)" class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Telegram Channel Link</label>
+            <input type="url" id="soc-tg" class="form-input" placeholder="https://t.me/yourlink" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp Channel Link</label>
+            <input type="url" id="soc-wa" class="form-input" placeholder="https://whatsapp.com/channel/yourlink" />
+          </div>
+          <div class="form-group full">
+            <button type="submit" class="btn btn-save">
+              <i class="fa-solid fa-check"></i> SAVE SOCIAL LINKS
+            </button>
+          </div>
+        </form>
       </div>
-    </div>
+    </section>
 
-    <!-- Server 1 | Server 2 | Server 3  +  Rotate & Fullscreen Row -->
-    <div class="player-action-row">
-      <div c
+  </div>
+
+  <!-- HLS.js + Firebase Realtime Database -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database-compat.js"></script>
+
+  <script>
+    /********************************************************************
+     * FIREBASE CONFIG (asia-southeast1 Region)
+     ********************************************************************/
+    (function() {
+      const JK_FIREBASE_CFG = {
+        apiKey: "AIzaSyCS3j4lg1P5KgcxiTynXbmLDqe7QdeaKyY",
+        authDomain: "sports-26d61.firebaseapp.com",
+        databaseURL: "https://sports-26d61-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "sports-26d61",
+        storageBucket: "sports-26d61.firebasestorage.app",
+        messagingSenderId: "742154075947",
+        appId: "1:742154075947:web:7848f0407ce244cef5cf6e"
+      };
+
+      if (!firebase.apps.length) {
+        firebase.initializeApp(JK_FIREBASE_CFG);
+      }
+    })();
+
+    const DEFAULT_STREAMS_DATA = {
+      "match_ind_nz": {
+        id: "match_ind_nz",
+        title: "INDIA vs NEW ZEALAND — LIVE HD",
+        category: "LIVE MATCH",
+        isBanner: true,
+        streamType: "auto",
+        thumbnail: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=900&q=80",
+        server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        server2: "https://rkdy-linkgen.wasmer.app/play.php?s=1&id=a74019ce0901958db17b",
+        server3: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
+        published: true,
+        order: 1
+      },
+      "ch_1": {
+        id: "ch_1",
+        title: "Sony TEN 3 HD",
+        category: "SPORTS",
+        isBanner: false,
+        streamType: "auto",
+        thumbnail: "https://ui-avatars.com/api/?name=TEN+3&background=3b0764&color=fff&bold=true&size=128",
+        server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        server2: "https://rkdy-linkgen.wasmer.app/play.php?s=1&id=a74019ce0901958db17b",
+        published: true,
+        order: 2
+      },
+      "ch_2": {
+        id: "ch_2",
+        title: "Sony TEN 1 HD",
+        category: "SPORTS",
+        isBanner: false,
+        streamType: "auto",
+        thumbnail: "https://ui-avatars.com/api/?name=TEN+1&background=1e1b4b&color=38bdf8&bold=true&size=128",
+        server1: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
+        server2: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        published: true,
+        order: 3
+      }
+    };
+
+    const STORAGE_KEY_STREAMS = 'jklive_v5_streams';
+    const STORAGE_KEY_SETTINGS = 'jklive_v5_settings';
+    const STORAGE_KEY_SOCIALS = 'jklive_v5_socials';
+
+    let streamsMap = {};
+    let rtdb = null;
+    let adm
