@@ -48,7 +48,7 @@
       padding-bottom: 45px;
     }
 
-    /* Top Header (FREEDEKHO Style) */
+    /* Top Header */
     .app-header {
       position: sticky;
       top: 0;
@@ -82,12 +82,6 @@
       margin-left: 4px;
     }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
     .menu-btn {
       background: transparent;
       border: none;
@@ -109,9 +103,7 @@
       align-items: center;
       gap: 8px;
     }
-    .top-alert-bar.show {
-      display: flex;
-    }
+    .top-alert-bar.show { display: flex; }
 
     .main-wrap {
       max-width: 960px;
@@ -119,7 +111,7 @@
       padding: 14px 15px;
     }
 
-    /* Top Channel Bar: [<- Back] [• LIVE] Title */
+    /* Top Channel Bar */
     .channel-top-bar {
       display: flex;
       align-items: center;
@@ -179,7 +171,7 @@
     }
 
     /* ==============================================================
-     * IN-APP UNIVERSAL PLAYER + FULL ROTATE LANDSCAPE MODE
+     * ANTI-BLOCK UNIVERSAL PLAYER + FULL ROTATE LANDSCAPE MODE
      * ============================================================== */
     .player-box {
       position: relative;
@@ -191,16 +183,13 @@
       border: 1.5px solid rgba(255, 255, 255, 0.12);
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85);
       margin-bottom: 14px;
-      transition: all 0.25s ease;
     }
 
-    /* Fullscreen normal mode */
     .player-box.in-app-fullscreen {
       position: fixed !important;
       inset: 0 !important;
       width: 100vw !important;
       height: 100vh !important;
-      max-width: none !important;
       aspect-ratio: auto !important;
       border-radius: 0 !important;
       border: none !important;
@@ -209,7 +198,6 @@
       background: #000 !important;
     }
 
-    /* Forced 90-Degree Landscape Rotate Mode (Works on ANY phone even if rotation is locked!) */
     .player-box.forced-landscape-rotate {
       position: fixed !important;
       top: 50% !important;
@@ -238,7 +226,6 @@
       display: block;
     }
 
-    /* Video Fit & Zoom Modes */
     .player-box.fit-cover video { object-fit: cover !important; }
     .player-box.fit-fill video { object-fit: fill !important; }
     .player-box.zoom-125 video { transform: scale(1.25); }
@@ -257,7 +244,7 @@
       display: flex;
     }
     .fs-ctrl-pill {
-      background: rgba(15, 15, 20, 0.85);
+      background: rgba(15, 15, 20, 0.88);
       border: 1.5px solid var(--accent);
       color: #fff;
       padding: 8px 14px;
@@ -268,10 +255,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.8);
     }
 
-    /* Live Status Badge inside Player Corner (Hides Raw URL) */
     .in-player-live-tag {
       position: absolute;
       top: 12px;
@@ -287,10 +272,8 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      letter-spacing: 0.5px;
     }
 
-    /* Tap to Unmute Floating Button */
     .unmute-pill {
       position: absolute;
       bottom: 58px;
@@ -311,7 +294,6 @@
     }
     .unmute-pill.show { display: inline-flex; }
 
-    /* Loading Overlay */
     .player-loader {
       position: absolute;
       inset: 0;
@@ -337,7 +319,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Action Row Below Player: [Server 1] [Server 2] --- [Rotate] [Fullscreen] */
+    /* Action Row Below Player */
     .player-action-row {
       display: flex;
       align-items: center;
@@ -350,7 +332,7 @@
     .server-buttons-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       flex-wrap: wrap;
     }
 
@@ -358,7 +340,7 @@
       background-color: #141418;
       border: 1px solid rgba(255, 255, 255, 0.09);
       color: #a1a1aa;
-      padding: 10px 16px;
+      padding: 10px 15px;
       border-radius: var(--radius-btn);
       font-size: 13px;
       font-weight: 700;
@@ -471,7 +453,6 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
     .match-play-icon {
       position: absolute;
@@ -668,7 +649,7 @@
     <a class="brand-logo" onclick="filterCategory('All')">
       <span id="site-title-white" class="part-white">JK</span><span id="site-title-orange" class="part-orange">LIVETV</span><span class="brand-dot"></span>
     </a>
-    <div class="header-actions">
+    <div>
       <button class="menu-btn" onclick="toggleDrawer(true)">
         <i class="fa-solid fa-bars"></i>
       </button>
@@ -684,7 +665,7 @@
   <!-- Main Content -->
   <main class="main-wrap">
 
-    <!-- Top Channel Navigation Bar: [<- Back] [• LIVE] Title -->
+    <!-- Top Channel Navigation Bar -->
     <div class="channel-top-bar">
       <button class="btn-back" onclick="document.getElementById('channels-section').scrollIntoView({behavior:'smooth'})">
         <i class="fa-solid fa-arrow-left"></i> Back
@@ -696,15 +677,17 @@
       <h1 id="current-channel-title" class="active-channel-heading">INDIA vs NEW ZEALAND — LIVE HD</h1>
     </div>
 
-    <!-- IN-APP UNIVERSAL PLAYER BOX (Plays M3U8, MP4, PHP & Web Links right inside the app!) -->
+    <!-- ANTI-BLOCK IN-APP UNIVERSAL PLAYER BOX -->
     <div id="player-box" class="player-box">
-      <!-- Clean Live Badge (No Raw Link Shown Anywhere) -->
       <div class="in-player-live-tag">
         <span style="width:6px;height:6px;background:#fff;border-radius:50%;"></span> LIVE HD
       </div>
 
       <!-- Floating Controls when in Fullscreen / Rotate Mode -->
       <div class="fs-floating-controls">
+        <button class="fs-ctrl-pill" onclick="toggleProxyUnblocker()">
+          <i class="fa-solid fa-shield-halved"></i> Unblock
+        </button>
         <button class="fs-ctrl-pill" onclick="cycleZoomFit()">
           <i class="fa-solid fa-up-right-and-down-left-from-center"></i> Fit
         </button>
@@ -712,7 +695,7 @@
           <i class="fa-solid fa-rotate"></i> Rotate
         </button>
         <button class="fs-ctrl-pill" style="background:var(--accent);" onclick="exitAllFullscreen()">
-          <i class="fa-solid fa-compress"></i> Exit Full
+          <i class="fa-solid fa-compress"></i> Exit
         </button>
       </div>
 
@@ -721,664 +704,30 @@
         <i class="fa-solid fa-volume-high"></i> Tap for Sound
       </button>
 
-      <!-- Engine 1: HTML5 HLS Video (No crossorigin attribute so ALL M3U8 links play without CORS block!) -->
+      <!-- Engine 1: HTML5 HLS Video -->
       <video id="hls-video" controls autoplay playsinline webkit-playsinline></video>
 
-      <!-- Engine 2: In-App Sandboxed / Embed Player for M3U8 Fallback & play.php links -->
+      <!-- Engine 2: In-App Sandboxed Multi-Engine Player (Clappr + HLS + Proxy Bypass) -->
       <iframe id="embed-iframe" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
 
       <!-- Loading Spinner -->
       <div id="player-loader" class="player-loader">
         <div class="loader-ring"></div>
-        <p id="loader-msg" style="font-size:13px; font-weight:700;">Loading Live Match...</p>
+        <p id="loader-msg" style="font-size:13px; font-weight:700;">Connecting Anti-Block Stream...</p>
       </div>
     </div>
 
-    <!-- Server 1 | Server 2 | Server 3  +  Rotate & Fullscreen Row -->
+    <!-- Server 1 | Server 2 | Unblock Mode  +  Rotate & Fullscreen Row -->
     <div class="player-action-row">
       <div class="server-buttons-wrap">
         <button id="srv-btn-1" class="btn-server active" onclick="switchServer(1)">Server 1</button>
         <button id="srv-btn-2" class="btn-server" onclick="switchServer(2)">Server 2</button>
         <button id="srv-btn-3" class="btn-server" onclick="switchServer(3)" style="display:none;">Server 3</button>
+        <button id="btn-unblock-mode" class="btn-server" onclick="toggleProxyUnblocker()" title="Unblock Blocked M3U8 Stream">
+          <i class="fa-solid fa-bolt" style="color:#10b981;"></i> Unblock M3U8
+        </button>
       </div>
 
       <div class="right-player-controls">
-        <button class="btn-server" onclick="cycleZoomFit()" title="Zoom / Stretch Video">
-          <i class="fa-solid fa-up-right-and-down-left-from-center"></i> <span id="fit-label">Fit</span>
-        </button>
-        <button class="btn-fullscreen-orange" onclick="toggleForcedRotate()" title="Rotate 90° Landscape Full Screen">
-          <i class="fa-solid fa-rotate"></i> Rotate Full
-        </button>
-        <button class="btn-fullscreen-orange" onclick="enterFullRouteScreen()">
-          <i class="fa-solid fa-expand"></i> Fullscreen
-        </button>
-      </div>
-    </div>
-
-    <!-- FEATURED LIVE MATCHES / THUMBNAIL BANNERS (Tap thumbnail -> Auto Opens Server & Plays Live) -->
-    <div id="featured-section" style="display:none;">
-      <div class="section-label-row">
-        <span class="section-label"><i class="fa-solid fa-fire" style="color:var(--accent);"></i> LIVE MATCHES (TAP THUMBNAIL TO PLAY LIVE)</span>
-      </div>
-      <div id="featured-banners-grid" class="featured-banners-grid"></div>
-    </div>
-
-    <!-- OTHER CHANNELS (2-Column Grid Like Screenshot) -->
-    <div id="channels-section" class="section-label-row">
-      <span id="grid-heading" class="section-label">OTHER CHANNELS</span>
-      <span id="clear-filter-btn" style="font-size:12px; color:var(--accent); font-weight:700; cursor:pointer; display:none;" onclick="filterCategory('All')">Show All ×</span>
-    </div>
-
-    <div id="channels-grid" class="channels-grid"></div>
-
-    <!-- Social Links -->
-    <div id="social-row" class="social-row"></div>
-
-  </main>
-
-  <!-- Slide-out Menu Drawer -->
-  <div id="menu-drawer" class="drawer-backdrop" onclick="if(event.target===this) toggleDrawer(false)">
-    <div class="drawer-panel">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); padding-bottom:12px;">
-        <span style="font-weight:900; font-size:18px;">JK <span style="color:var(--accent);">LIVETV</span></span>
-        <button class="menu-btn" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <input type="text" class="drawer-search" placeholder="Search channels or matches..." oninput="onSearchInput(this.value)" />
-
-      <div>
-        <p style="font-size:11px; font-weight:800; color:var(--text-muted); margin-bottom:8px;">CATEGORIES</p>
-        <button class="drawer-cat-btn active" onclick="filterCategory('All')">All Channels</button>
-        <button class="drawer-cat-btn" onclick="filterCategory('LIVE MATCH')">Live Cricket / Matches</button>
-        <button class="drawer-cat-btn" onclick="filterCategory('SPORTS')">Sports</button>
-        <button class="drawer-cat-btn" onclick="filterCategory('ENTERTAINMENT')">Entertainment</button>
-        <button class="drawer-cat-btn" onclick="filterCategory('MOVIES')">Movies</button>
-      </div>
-
-      <div style="margin-top:auto; border-top:1px solid var(--border-subtle); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:11px; color:#10b981;">● Cloud Connected</span>
-        <a href="admin.html" style="font-size:12px; color:var(--accent); font-weight:800; text-decoration:none;">
-          <i class="fa-solid fa-lock"></i> Admin Panel
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <div id="toast-box"></div>
-
-  <!-- HLS.js + Firebase Realtime Database -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database-compat.js"></script>
-
-  <script>
-    /********************************************************************
-     * FIREBASE CONFIG (asia-southeast1 Region)
-     ********************************************************************/
-    (function() {
-      const JK_FIREBASE_CFG = {
-        apiKey: "AIzaSyCS3j4lg1P5KgcxiTynXbmLDqe7QdeaKyY",
-        authDomain: "sports-26d61.firebaseapp.com",
-        databaseURL: "https://sports-26d61-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "sports-26d61",
-        storageBucket: "sports-26d61.firebasestorage.app",
-        messagingSenderId: "742154075947",
-        appId: "1:742154075947:web:7848f0407ce244cef5cf6e"
-      };
-
-      if (!firebase.apps.length) {
-        firebase.initializeApp(JK_FIREBASE_CFG);
-      }
-    })();
-
-    const DEFAULT_STREAMS_DATA = {
-      "match_ind_nz": {
-        id: "match_ind_nz",
-        title: "INDIA vs NEW ZEALAND — LIVE HD",
-        category: "LIVE MATCH",
-        isBanner: true,
-        streamType: "auto",
-        thumbnail: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=900&q=80",
-        server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        server2: "https://rkdy-linkgen.wasmer.app/play.php?s=1&id=a74019ce0901958db17b",
-        server3: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
-        published: true,
-        order: 1
-      },
-      "ch_1": {
-        id: "ch_1",
-        title: "Sony TEN 3 HD",
-        category: "SPORTS",
-        isBanner: false,
-        streamType: "auto",
-        thumbnail: "https://ui-avatars.com/api/?name=TEN+3&background=3b0764&color=fff&bold=true&size=128",
-        server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        server2: "https://rkdy-linkgen.wasmer.app/play.php?s=1&id=a74019ce0901958db17b",
-        published: true,
-        order: 2
-      },
-      "ch_2": {
-        id: "ch_2",
-        title: "Sony TEN 1 HD",
-        category: "SPORTS",
-        isBanner: false,
-        streamType: "auto",
-        thumbnail: "https://ui-avatars.com/api/?name=TEN+1&background=1e1b4b&color=38bdf8&bold=true&size=128",
-        server1: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
-        server2: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        published: true,
-        order: 3
-      },
-      "ch_3": {
-        id: "ch_3",
-        title: "Sony TEN 2 HD",
-        category: "SPORTS",
-        isBanner: false,
-        streamType: "auto",
-        thumbnail: "https://ui-avatars.com/api/?name=TEN+2&background=172554&color=60a5fa&bold=true&size=128",
-        server1: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8",
-        server2: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        published: true,
-        order: 4
-      },
-      "ch_4": {
-        id: "ch_4",
-        title: "Sony SET HD",
-        category: "ENTERTAINMENT",
-        isBanner: false,
-        streamType: "auto",
-        thumbnail: "https://ui-avatars.com/api/?name=SET+HD&background=ca8a04&color=fff&bold=true&size=128",
-        server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        server2: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
-        published: true,
-        order: 5
-      },
-      "ch_5": {
-        id: "ch_5",
-        title: "Sony MAX HD",
-        category: "MOVIES",
-        isBanner: false,
-        streamType: "auto",
-        thumbnail: "https://ui-avatars.com/api/?name=MAX+HD&background=b45309&color=fef08a&bold=true&size=128",
-        server1: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
-        server2: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        published: true,
-        order: 6
-      }
-    };
-
-    const STORAGE_KEY_STREAMS = 'jklive_v5_streams';
-    const STORAGE_KEY_SETTINGS = 'jklive_v5_settings';
-    const STORAGE_KEY_SOCIALS = 'jklive_v5_socials';
-
-    let streamsData = {};
-    let socialsData = {};
-    let activeChannel = null;
-    let activeServerNum = 1;
-    let currentCategory = 'All';
-    let searchQuery = '';
-    let hlsPlayer = null;
-    let activeBlobUrl = null;
-    let zoomIdx = 0;
-    const zoomModes = [
-      { cls: '', name: 'Fit' },
-      { cls: 'fit-fill', name: 'Full Stretch' },
-      { cls: 'fit-cover', name: 'Zoom Crop' },
-      { cls: 'zoom-125', name: '1.25x' }
-    ];
-
-    const playerBox = document.getElementById('player-box');
-    const videoEl = document.getElementById('hls-video');
-    const iframeEl = document.getElementById('embed-iframe');
-    const unmuteBtn = document.getElementById('unmute-pill');
-
-    /********************************************************************
-     * INITIALIZE & REAL-TIME SYNC
-     ********************************************************************/
-    window.addEventListener('DOMContentLoaded', () => {
-      loadFromLocalStorage();
-      connectFirebaseRealtimeDB();
-
-      if ('BroadcastChannel' in window) {
-        const bc = new BroadcastChannel('jklive_v5_sync');
-        bc.onmessage = () => {
-          loadFromLocalStorage();
-          if (activeChannel && streamsData[activeChannel.id]) {
-            activeChannel = streamsData[activeChannel.id];
-            switchServer(activeServerNum);
-          }
-          showToast("Live Match Updated!");
-        };
-      }
-
-      window.addEventListener('storage', () => {
-        loadFromLocalStorage();
-      });
-    });
-
-    function connectFirebaseRealtimeDB() {
-      try {
-        const rtdb = firebase.database();
-
-        rtdb.ref('streams_v5').on('value', snap => {
-          const val = snap.val();
-          if (val && Object.keys(val).length > 0) {
-            streamsData = val;
-            localStorage.setItem(STORAGE_KEY_STREAMS, JSON.stringify(streamsData));
-            renderAllUI();
-          }
-        });
-
-        rtdb.ref('settings_v5').on('value', snap => {
-          if (snap.val()) {
-            localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(snap.val()));
-            applySettingsUI(snap.val());
-          }
-        });
-
-        rtdb.ref('socials_v5').on('value', snap => {
-          if (snap.val()) {
-            socialsData = snap.val();
-            localStorage.setItem(STORAGE_KEY_SOCIALS, JSON.stringify(socialsData));
-            renderSocialButtons();
-          }
-        });
-      } catch (e) {}
-    }
-
-    function loadFromLocalStorage() {
-      const rawStreams = localStorage.getItem(STORAGE_KEY_STREAMS);
-      if (!rawStreams) {
-        localStorage.setItem(STORAGE_KEY_STREAMS, JSON.stringify(DEFAULT_STREAMS_DATA));
-        streamsData = DEFAULT_STREAMS_DATA;
-      } else {
-        try { streamsData = JSON.parse(rawStreams); } catch (e) { streamsData = DEFAULT_STREAMS_DATA; }
-      }
-
-      const rawSettings = localStorage.getItem(STORAGE_KEY_SETTINGS);
-      if (rawSettings) {
-        try { applySettingsUI(JSON.parse(rawSettings)); } catch (e) {}
-      }
-
-      const rawSocials = localStorage.getItem(STORAGE_KEY_SOCIALS);
-      if (rawSocials) {
-        try { socialsData = JSON.parse(rawSocials); } catch (e) {}
-      } else {
-        socialsData = {
-          telegram: { name: "Telegram", url: "https://t.me/" },
-          whatsapp: { name: "WhatsApp", url: "https://whatsapp.com/" }
-        };
-      }
-
-      renderAllUI();
-      renderSocialButtons();
-    }
-
-    function applySettingsUI(cfg) {
-      if (!cfg) return;
-      if (cfg.siteWhite) document.getElementById('site-title-white').textContent = cfg.siteWhite;
-      if (cfg.siteOrange) document.getElementById('site-title-orange').textContent = cfg.siteOrange;
-      if (cfg.themeColor) document.documentElement.style.setProperty('--accent', cfg.themeColor);
-
-      const alertBar = document.getElementById('top-alert-bar');
-      if (cfg.alertText && cfg.alertText.trim() !== '') {
-        document.getElementById('top-alert-text').textContent = cfg.alertText;
-        alertBar.classList.add('show');
-      } else {
-        alertBar.classList.remove('show');
-      }
-    }
-
-    /********************************************************************
-     * 4-STAGE IN-APP STREAM ENGINE (Plays ANY M3U8, MP4, or PHP/Embed URL)
-     * 100% Inside the App — Never shows raw URL
-     ********************************************************************/
-    function selectAndPlayChannel(channelId) {
-      const ch = streamsData[channelId];
-      if (!ch) return;
-
-      activeChannel = ch;
-      activeServerNum = 1;
-
-      document.getElementById('current-channel-title').textContent = ch.title;
-      document.getElementById('srv-btn-3').style.display = ch.server3 ? 'inline-flex' : 'none';
-
-      renderAllUI();
-      switchServer(1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function switchServer(srvNum) {
-      if (!activeChannel) return;
-      activeServerNum = srvNum;
-
-      [1, 2, 3].forEach(n => {
-        const b = document.getElementById('srv-btn-' + n);
-        if (b) b.classList.toggle('active', n === srvNum);
-      });
-
-      let streamUrl = activeChannel.server1;
-      if (srvNum === 2 && activeChannel.server2) streamUrl = activeChannel.server2;
-      if (srvNum === 3 && activeChannel.server3) streamUrl = activeChannel.server3;
-
-      playInAppStream(streamUrl, activeChannel.streamType || 'auto');
-    }
-
-    function detectIsM3U8(url, forcedType) {
-      if (forcedType === 'm3u8') return true;
-      if (forcedType === 'embed') return false;
-      if (!url) return false;
-      const u = url.toLowerCase();
-      if (u.includes('.m3u8') || u.includes('/hls/') || u.includes('m3u8')) return true;
-      return false;
-    }
-
-    function playInAppStream(rawUrl, forcedType) {
-      const loader = document.getElementById('player-loader');
-      loader.classList.add('active');
-      unmuteBtn.classList.remove('show');
-
-      // Clean up previous instances
-      if (hlsPlayer) {
-        hlsPlayer.destroy();
-        hlsPlayer = null;
-      }
-      if (activeBlobUrl) {
-        URL.revokeObjectURL(activeBlobUrl);
-        activeBlobUrl = null;
-      }
-      videoEl.pause();
-      videoEl.removeAttribute('src');
-      iframeEl.src = 'about:blank';
-
-      if (!rawUrl || !rawUrl.trim().startsWith('http')) {
-        loader.classList.remove('active');
-        showToast("Server link not set");
-        return;
-      }
-
-      const url = rawUrl.trim();
-      const isM3u8 = detectIsM3U8(url, forcedType);
-
-      if (isM3u8) {
-        // STAGE 1: Direct HLS.js Without CORS Restriction
-        iframeEl.classList.remove('active-engine');
-        videoEl.classList.add('active-engine');
-
-        if (Hls.isSupported()) {
-          hlsPlayer = new Hls({
-            enableWorker: true,
-            lowLatencyMode: true,
-            xhrSetup: function(xhr) {
-              xhr.withCredentials = false;
-            }
-          });
-
-          hlsPlayer.loadSource(url);
-          hlsPlayer.attachMedia(videoEl);
-
-          hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => {
-            loader.classList.remove('active');
-            tryPlayVideoElement();
-          });
-
-          hlsPlayer.on(Hls.Events.ERROR, (e, data) => {
-            if (data.fatal) {
-              if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-                hlsPlayer.recoverMediaError();
-              } else {
-                // STAGE 2 FALLBACK: Try Native Video or Sandboxed In-App Blob Player
-                playM3U8InsideBlobSandbox(url);
-              }
-            }
-          });
-        } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-          videoEl.src = url;
-          videoEl.onloadedmetadata = () => {
-            loader.classList.remove('active');
-            tryPlayVideoElement();
-          };
-          videoEl.onerror = () => playM3U8InsideBlobSandbox(url);
-        } else {
-          playM3U8InsideBlobSandbox(url);
-        }
-      } else {
-        // STAGE 3: In-App No-Referrer Embed Player (For play.php / web links)
-        videoEl.classList.remove('active-engine');
-        iframeEl.classList.add('active-engine');
-        iframeEl.src = url;
-
-        iframeEl.onload = () => {
-          loader.classList.remove('active');
-        };
-        setTimeout(() => loader.classList.remove('active'), 1400);
-      }
-    }
-
-    // Isolated In-App Blob Player for tricky M3U8 links with strict referrer rules
-    function playM3U8InsideBlobSandbox(m3u8Url) {
-      const loader = document.getElementById('player-loader');
-      videoEl.classList.remove('active-engine');
-      iframeEl.classList.add('active-engine');
-
-      const htmlContent = `<!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="referrer" content="no-referrer">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <style>
-          body,html{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;}
-          video{width:100%;height:100%;object-fit:contain;}
-        </style>
-        <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"><\/script>
-      </head>
-      <body>
-        <video id="v" controls autoplay playsinline></video>
-        <script>
-          const v = document.getElementById('v');
-          const src = ${JSON.stringify(m3u8Url)};
-          if (Hls.isSupported()) {
-            const h = new Hls({ enableWorker: true });
-            h.loadSource(src);
-            h.attachMedia(v);
-            h.on(Hls.Events.MANIFEST_PARSED, () => {
-              v.play().catch(() => { v.muted = true; v.play(); });
-            });
-          } else {
-            v.src = src;
-            v.play().catch(() => { v.muted = true; v.play(); });
-          }
-        <\/script>
-      </body>
-      </html>`;
-
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      activeBlobUrl = URL.createObjectURL(blob);
-      iframeEl.src = activeBlobUrl;
-      setTimeout(() => loader.classList.remove('active'), 1000);
-    }
-
-    function tryPlayVideoElement() {
-      videoEl.muted = false;
-      videoEl.play().then(() => {
-        unmuteBtn.classList.remove('show');
-      }).catch(() => {
-        videoEl.muted = true;
-        videoEl.play().catch(() => {});
-        unmuteBtn.classList.add('show');
-      });
-    }
-
-    function unmuteLiveVideo() {
-      videoEl.muted = false;
-      videoEl.volume = 1.0;
-      unmuteBtn.classList.remove('show');
-    }
-
-    /********************************************************************
-     * FULL ROTATE / FULL ROUTE LANDSCAPE FULLSCREEN ENGINE
-     ********************************************************************/
-    async function enterFullRouteScreen() {
-      try {
-        if (playerBox.requestFullscreen) {
-          await playerBox.requestFullscreen();
-        } else if (playerBox.webkitRequestFullscreen) {
-          playerBox.webkitRequestFullscreen();
-        } else {
-          playerBox.classList.add('in-app-fullscreen');
-        }
-        if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(() => {});
-        }
-      } catch (e) {
-        playerBox.classList.toggle('in-app-fullscreen');
-      }
-    }
-
-    function toggleForcedRotate() {
-      // Forces 90-degree full landscape screen on ANY mobile browser even if auto-rotate is off!
-      if (playerBox.classList.contains('forced-landscape-rotate')) {
-        exitAllFullscreen();
-      } else {
-        playerBox.classList.remove('in-app-fullscreen');
-        playerBox.classList.add('forced-landscape-rotate');
-        showToast("Rotated to Full Landscape View");
-      }
-    }
-
-    function exitAllFullscreen() {
-      playerBox.classList.remove('in-app-fullscreen');
-      playerBox.classList.remove('forced-landscape-rotate');
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-      }
-      if (screen.orientation && screen.orientation.unlock) {
-        screen.orientation.unlock();
-      }
-    }
-
-    function cycleZoomFit() {
-      zoomModes.forEach(m => { if (m.cls) playerBox.classList.remove(m.cls); });
-      zoomIdx = (zoomIdx + 1) % zoomModes.length;
-      if (zoomModes[zoomIdx].cls) playerBox.classList.add(zoomModes[zoomIdx].cls);
-      document.getElementById('fit-label').textContent = zoomModes[zoomIdx].name;
-      showToast("Screen Mode: " + zoomModes[zoomIdx].name);
-    }
-
-    /********************************************************************
-     * RENDER FEATURED MATCH THUMBNAILS & 2-COLUMN CHANNEL GRID
-     ********************************************************************/
-    function renderAllUI() {
-      const allList = Object.values(streamsData)
-        .filter(item => item.published !== false)
-        .sort((a, b) => (a.order || 99) - (b.order || 99));
-
-      if (!activeChannel && allList.length > 0) {
-        activeChannel = allList[0];
-        document.getElementById('current-channel-title').textContent = activeChannel.title;
-        document.getElementById('srv-btn-3').style.display = activeChannel.server3 ? 'inline-flex' : 'none';
-        playInAppStream(activeChannel.server1, activeChannel.streamType || 'auto');
-      } else if (activeChannel && streamsData[activeChannel.id]) {
-        activeChannel = streamsData[activeChannel.id];
-        document.getElementById('current-channel-title').textContent = activeChannel.title;
-      }
-
-      // 1. Featured Match Banners (16:9 Thumbnails like IND vs NZ)
-      const banners = allList.filter(item => item.isBanner === true || item.category === 'LIVE MATCH');
-      const featuredSec = document.getElementById('featured-section');
-      const bannerGrid = document.getElementById('featured-banners-grid');
-
-      if (banners.length > 0 && (currentCategory === 'All' || currentCategory === 'LIVE MATCH')) {
-        featuredSec.style.display = 'block';
-        bannerGrid.innerHTML = banners.map(b => {
-          const isCurrent = activeChannel && activeChannel.id === b.id;
-          return `
-            <div class="match-banner-card ${isCurrent ? 'active-card' : ''}" onclick="selectAndPlayChannel('${b.id}')">
-              <div class="match-thumb-wrap">
-                <img src="${b.thumbnail}" alt="${escHtml(b.title)}" onerror="this.src='https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80'" />
-                <span class="match-live-tag"><span class="dot" style="width:6px;height:6px;background:#fff;border-radius:50%;"></span> LIVE NOW</span>
-                <div class="match-play-icon"><i class="fa-solid fa-circle-play"></i></div>
-              </div>
-              <div class="match-banner-info">
-                <div>
-                  <div class="match-banner-title">${escHtml(b.title)}</div>
-                  <div class="match-banner-sub">Tap Thumbnail to Play Live Inside App</div>
-                </div>
-                <i class="fa-solid fa-bolt" style="color:var(--accent); font-size:18px;"></i>
-              </div>
-            </div>
-          `;
-        }).join('');
-      } else {
-        featuredSec.style.display = 'none';
-      }
-
-      // 2. Standard 2-Column Channels Grid
-      const filteredChannels = allList.filter(c => {
-        const catMatch = currentCategory === 'All' || (c.category && c.category.toUpperCase() === currentCategory.toUpperCase());
-        const searchMatch = !searchQuery || c.title.toLowerCase().includes(searchQuery) || (c.category && c.category.toLowerCase().includes(searchQuery));
-        return catMatch && searchMatch;
-      });
-
-      const grid = document.getElementById('channels-grid');
-      grid.innerHTML = filteredChannels.map(ch => {
-        const isCurrent = activeChannel && activeChannel.id === ch.id;
-        return `
-          <div class="channel-item-card ${isCurrent ? 'active-card' : ''}" onclick="selectAndPlayChannel('${ch.id}')">
-            <div class="channel-logo-box">
-              <img src="${ch.thumbnail}" alt="${escHtml(ch.title)}" onerror="this.src='https://ui-avatars.com/api/?name=TV&background=27272a&color=fff&bold=true'" />
-            </div>
-            <div class="channel-text-box">
-              <div class="channel-name">${escHtml(ch.title)}</div>
-              <div class="channel-cat">${escHtml(ch.category || 'SPORTS')}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderSocialButtons() {
-      const row = document.getElementById('social-row');
-      const list = Object.values(socialsData || {});
-      row.innerHTML = list.map(s => `
-        <a href="${s.url}" target="_blank" rel="noopener" class="soc-pill">
-          <i class="fa-solid fa-share-nodes" style="color:var(--accent);"></i>
-          <span>Join ${escHtml(s.name)}</span>
-        </a>
-      `).join('');
-    }
-
-    function filterCategory(cat) {
-      currentCategory = cat;
-      document.getElementById('grid-heading').textContent = cat === 'All' ? 'OTHER CHANNELS' : `${cat}`;
-      document.getElementById('clear-filter-btn').style.display = cat === 'All' ? 'none' : 'inline';
-      renderAllUI();
-      toggleDrawer(false);
-    }
-
-    function onSearchInput(val) {
-      searchQuery = val.trim().toLowerCase();
-      renderAllUI();
-    }
-
-    function toggleDrawer(open) {
-      document.getElementById('menu-drawer').classList.toggle('open', open);
-    }
-
-    function showToast(msg) {
-      const box = document.getElementById('toast-box');
-      const d = document.createElement('div');
-      d.className = 'toast-msg';
-      d.textContent = msg;
-      box.appendChild(d);
-      setTimeout(() => d.remove(), 2500);
-    }
-
-    function escHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-    }
-  </script>
-</body>
-</html>
+        <button class="btn-server" onclick="cycleZoomFit()">
+          <i class="fa-solid fa-up-right-and-down-left-from-cente
