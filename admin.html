@@ -167,20 +167,25 @@
       border-color: var(--accent);
     }
 
-    .thumb-preview-row {
+    /* Dedicated Image Upload Box */
+    .upload-zone {
+      background: rgba(255, 69, 20, 0.06);
+      border: 1.5px dashed var(--accent);
+      border-radius: 12px;
+      padding: 14px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 14px;
-      margin-top: 6px;
       flex-wrap: wrap;
     }
     .thumb-preview-img {
-      width: 120px;
-      height: 68px;
+      width: 135px;
+      height: 76px;
       border-radius: 8px;
       object-fit: cover;
       background: #000;
-      border: 1px solid var(--accent);
+      border: 2px solid var(--accent);
     }
 
     .btn {
@@ -316,11 +321,19 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">Stream Link Mode (M3U8 or Any Live Link) *</label>
+              <label class="form-label">Stream Link Mode *</label>
               <select id="item-stream-type" class="form-select">
-                <option value="auto">⚡ Auto Detect (Plays M3U8, MP4 & PHP/Web Links Automatically)</option>
+                <option value="auto">⚡ Auto Detect (M3U8, MP4 & PHP/Web Links)</option>
                 <option value="m3u8">📡 Force M3U8 HLS Player Mode</option>
                 <option value="embed">🌐 Force Web / PHP Embed Player Mode</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Anti-Block M3U8 Proxy Tunnel</label>
+              <select id="item-use-proxy" class="form-select">
+                <option value="false">Normal Speed (Auto-Unblock if Blocked)</option>
+                <option value="true">🛡️ Always Use Anti-Block CORS Proxy Tunnel</option>
               </select>
             </div>
 
@@ -339,21 +352,30 @@
               <input type="number" id="item-order" class="form-input" value="1" min="1" />
             </div>
 
-            <!-- THUMBNAIL URL OR GALLERY UPLOAD -->
+            <!-- 100% WORKING GALLERY IMAGE UPLOAD + URL BOX -->
             <div class="form-group full">
-              <label class="form-label">Thumbnail Image URL OR Choose Photo from Gallery *</label>
-              <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <input type="text" id="item-thumb" class="form-input" style="flex:1; min-width:220px;" placeholder="Paste Image URL or upload photo ->" oninput="updateThumbPreview(this.value)" required />
-                <label class="btn btn-dark" style="cursor:pointer;">
-                  <i class="fa-solid fa-image"></i> Choose Photo from Gallery
-                  <input type="file" accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
-                </label>
-              </div>
-              <div class="thumb-preview-row">
-                <img id="thumb-preview" class="thumb-preview-img" src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80" alt="Preview" />
-                <span style="font-size:12px; color:var(--text-sub);">
-                  👆 Live Thumbnail Preview. User Panel par is photo par tap karte hi Server 1 automatic चालू ho jayega!
-                </span>
+              <label class="form-label">Match / Channel Thumbnail (Upload from Phone Gallery OR Paste URL) *</label>
+              
+              <!-- Hidden File Input triggered directly by button -->
+              <input type="file" id="gallery-file-input" accept="image/*" style="display:none;" onchange="handleDirectGalleryUpload(this)" />
+
+              <div class="upload-zone">
+                <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                  <img id="thumb-preview" class="thumb-preview-img" src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80" alt="Preview" />
+                  <div>
+                    <button type="button" class="btn btn-orange" onclick="document.getElementById('gallery-file-input').click()">
+                      <i class="fa-solid fa-camera"></i> Select Photo From Phone Gallery
+                    </button>
+                    <p id="upload-status-msg" style="font-size:12px; color:#10b981; margin-top:6px; font-weight:700;">
+                      ✓ Ready! Tap button above to pick photo from gallery.
+                    </p>
+                  </div>
+                </div>
+
+                <div style="flex:1; min-width:240px;">
+                  <label class="form-label" style="margin-bottom:4px; display:block;">Or Paste Image URL Directly:</label>
+                  <input type="text" id="item-thumb-url" class="form-input" placeholder="https://example.com/match-banner.jpg" oninput="onManualThumbUrlInput(this.value)" />
+                </div>
               </div>
             </div>
 
@@ -507,6 +529,7 @@
         category: "LIVE MATCH",
         isBanner: true,
         streamType: "auto",
+        useProxy: false,
         thumbnail: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=900&q=80",
         server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
         server2: "https://rkdy-linkgen.wasmer.app/play.php?s=1&id=a74019ce0901958db17b",
@@ -519,31 +542,4 @@
         title: "Sony TEN 3 HD",
         category: "SPORTS",
         isBanner: false,
-        streamType: "auto",
-        thumbnail: "https://ui-avatars.com/api/?name=TEN+3&background=3b0764&color=fff&bold=true&size=128",
-        server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        server2: "https://rkdy-linkgen.wasmer.app/play.php?s=1&id=a74019ce0901958db17b",
-        published: true,
-        order: 2
-      },
-      "ch_2": {
-        id: "ch_2",
-        title: "Sony TEN 1 HD",
-        category: "SPORTS",
-        isBanner: false,
-        streamType: "auto",
-        thumbnail: "https://ui-avatars.com/api/?name=TEN+1&background=1e1b4b&color=38bdf8&bold=true&size=128",
-        server1: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
-        server2: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        published: true,
-        order: 3
-      }
-    };
-
-    const STORAGE_KEY_STREAMS = 'jklive_v5_streams';
-    const STORAGE_KEY_SETTINGS = 'jklive_v5_settings';
-    const STORAGE_KEY_SOCIALS = 'jklive_v5_socials';
-
-    let streamsMap = {};
-    let rtdb = null;
-    let adm
+        streamType
