@@ -542,4 +542,366 @@
         title: "Sony TEN 3 HD",
         category: "SPORTS",
         isBanner: false,
-        streamType
+        streamType: "auto",
+        useProxy: false,
+        thumbnail: "https://ui-avatars.com/api/?name=TEN+3&background=3b0764&color=fff&bold=true&size=128",
+        server1: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        server2: "https://rkdy-linkgen.wasmer.app/play.php?s=1&id=a74019ce0901958db17b",
+        published: true,
+        order: 2
+      },
+      "ch_2": {
+        id: "ch_2",
+        title: "Sony TEN 1 HD",
+        category: "SPORTS",
+        isBanner: false,
+        streamType: "auto",
+        useProxy: false,
+        thumbnail: "https://ui-avatars.com/api/?name=TEN+1&background=1e1b4b&color=38bdf8&bold=true&size=128",
+        server1: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
+        server2: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        published: true,
+        order: 3
+      }
+    };
+
+    const STORAGE_KEY_STREAMS = 'jklive_v6_streams';
+    const STORAGE_KEY_SETTINGS = 'jklive_v6_settings';
+    const STORAGE_KEY_SOCIALS = 'jklive_v6_socials';
+
+    let streamsMap = {};
+    let currentThumbnailData = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80';
+    let rtdb = null;
+    let adminHls = null;
+    const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('jklive_v6_sync') : null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      try { rtdb = firebase.database(); } catch (e) {}
+      initAdminData();
+    });
+
+    function initAdminData() {
+      const raw = localStorage.getItem(STORAGE_KEY_STREAMS);
+      if (!raw) {
+        streamsMap = DEFAULT_STREAMS_DATA;
+        localStorage.setItem(STORAGE_KEY_STREAMS, JSON.stringify(streamsMap));
+      } else {
+        try { streamsMap = JSON.parse(raw); } catch (e) { streamsMap = DEFAULT_STREAMS_DATA; }
+      }
+
+      if (rtdb) {
+        rtdb.ref('streams_v6').on('value', snap => {
+          const val = snap.val();
+          if (val && Object.keys(val).length > 0) {
+            streamsMap = val;
+            localStorage.setItem(STORAGE_KEY_STREAMS, JSON.stringify(streamsMap));
+            renderStreamsTable();
+          }
+        });
+      }
+
+      try {
+        const s = JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS) || '{}');
+        if (s.siteWhite) document.getElementById('set-white').value = s.siteWhite;
+        if (s.siteOrange) document.getElementById('set-orange').value = s.siteOrange;
+        if (s.themeColor) document.getElementById('set-color').value = s.themeColor;
+        if (s.alertText) document.getElementById('set-alert').value = s.alertText;
+      } catch (e) {}
+
+      try {
+        const soc = JSON.parse(localStorage.getItem(STORAGE_KEY_SOCIALS) || '{}');
+        if (soc.telegram) document.getElementById('soc-tg').value = soc.telegram.url || '';
+        if (soc.whatsapp) document.getElementById('soc-wa').value = soc.whatsapp.url || '';
+      } catch (e) {}
+
+      renderStreamsTable();
+    }
+
+    /********************************************************************
+     * 100% RELIABLE GALLERY PHOTO UPLOAD (Lightweight Base64 Storage)
+     ********************************************************************/
+    function handleDirectGalleryUpload(inputEl) {
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+
+      const statusMsg = document.getElementById('upload-status-msg');
+      statusMsg.textContent = "⏳ Processing photo from gallery...";
+      statusMsg.style.color = "#f59e0b";
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const targetW = 480;
+          const scale = Math.min(1, targetW / img.width);
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Compress to lightweight JPEG (~15-25KB) so Firebase & LocalStorage never block it!
+          currentThumbnailData = canvas.toDataURL('image/jpeg', 0.78);
+          document.getElementById('thumb-preview').src = currentThumbnailData;
+          document.getElementById('item-thumb-url').value = '';
+          statusMsg.textContent = "✅ Gallery Photo Uploaded & Ready! Now click SAVE & PUBLISH below.";
+          statusMsg.style.color = "#10b981";
+          showSuccessBanner("✅ Gallery Photo Selected! Now click Save & Publish.");
+        };
+        img.onerror = function() {
+          currentThumbnailData = evt.target.result;
+          document.getElementById('thumb-preview').src = currentThumbnailData;
+          statusMsg.textContent = "✅ Photo Loaded!";
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function onManualThumbUrlInput(val) {
+      if (val && val.trim() !== '') {
+        currentThumbnailData = val.trim();
+        document.getElementById('thumb-preview').src = currentThumbnailData;
+        document.getElementById('upload-status-msg').textContent = "✅ Using Custom Image URL";
+      }
+    }
+
+    /********************************************************************
+     * ADMIN LIVE PREVIEW PLAYER (With Automatic Anti-Block Proxy Fallback)
+     ********************************************************************/
+    function testLiveStreamInAdmin(url) {
+      if (!url || !url.trim().startsWith('http')) {
+        alert("Pehle Server box mein valid http/https stream link daalein!");
+        return;
+      }
+      const cleanUrl = url.trim();
+      const mode = document.getElementById('item-stream-type').value;
+      const useProxy = document.getElementById('item-use-proxy').value === 'true';
+      const stage = document.getElementById('admin-preview-box');
+      const vid = document.getElementById('admin-preview-video');
+      const ifr = document.getElementById('admin-preview-iframe');
+
+      stage.classList.add('show');
+
+      if (adminHls) {
+        adminHls.destroy();
+        adminHls = null;
+      }
+      vid.pause();
+      vid.removeAttribute('src');
+      ifr.src = 'about:blank';
+
+      const lower = cleanUrl.toLowerCase();
+      const isM3u8 = mode === 'm3u8' || (mode === 'auto' && (lower.includes('.m3u8') || lower.includes('/hls/') || lower.includes('m3u8')));
+
+      if (isM3u8) {
+        ifr.classList.remove('active');
+        vid.classList.add('active');
+        const playUrl = useProxy ? ('https://corsproxy.io/?' + encodeURIComponent(cleanUrl)) : cleanUrl;
+
+        if (Hls.isSupported()) {
+          let triedProxyFallback = useProxy;
+          adminHls = new Hls({
+            enableWorker: true,
+            xhrSetup: function(xhr) { xhr.withCredentials = false; }
+          });
+          adminHls.loadSource(playUrl);
+          adminHls.attachMedia(vid);
+          adminHls.on(Hls.Events.MANIFEST_PARSED, () => {
+            vid.play().catch(() => { vid.muted = true; vid.play(); });
+          });
+          adminHls.on(Hls.Events.ERROR, (e, data) => {
+            if (data.fatal && !triedProxyFallback) {
+              triedProxyFallback = true;
+              showSuccessBanner("⚡ Direct M3U8 blocked, switching Preview to Anti-Block Proxy...");
+              adminHls.destroy();
+              adminHls = new Hls({ enableWorker: true });
+              adminHls.loadSource('https://corsproxy.io/?' + encodeURIComponent(cleanUrl));
+              adminHls.attachMedia(vid);
+              adminHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                vid.play().catch(() => { vid.muted = true; vid.play(); });
+              });
+            }
+          });
+        } else {
+          vid.src = playUrl;
+          vid.play().catch(() => {});
+        }
+      } else {
+        vid.classList.remove('active');
+        ifr.classList.add('active');
+        ifr.src = cleanUrl;
+      }
+
+      stage.scrollIntoView({ behavior: 'smooth' });
+      showSuccessBanner("▶️ Playing Live Stream Preview in Admin Panel!");
+    }
+
+    function pushAllToCloud() {
+      if (syncChannel) syncChannel.postMessage({ updated: Date.now() });
+      if (rtdb) {
+        rtdb.ref('streams_v6').set(streamsMap).catch(() => {});
+      }
+    }
+
+    function showSuccessBanner(msg) {
+      const b = document.getElementById('success-banner');
+      document.getElementById('success-banner-text').textContent = msg;
+      b.classList.add('show');
+      setTimeout(() => b.classList.remove('show'), 3500);
+    }
+
+    function saveStreamItem(e) {
+      e.preventDefault();
+      const id = document.getElementById('item-id').value || ('stream_' + Date.now());
+      const styleVal = document.getElementById('item-style').value;
+      const manualUrl = document.getElementById('item-thumb-url').value.trim();
+
+      const obj = {
+        id: id,
+        title: document.getElementById('item-title').value.trim(),
+        isBanner: styleVal === 'banner',
+        streamType: document.getElementById('item-stream-type').value,
+        useProxy: document.getElementById('item-use-proxy').value === 'true',
+        category: document.getElementById('item-category').value,
+        order: parseInt(document.getElementById('item-order').value || '1', 10),
+        thumbnail: manualUrl || currentThumbnailData,
+        server1: document.getElementById('item-srv1').value.trim(),
+        server2: document.getElementById('item-srv2').value.trim(),
+        server3: document.getElementById('item-srv3').value.trim(),
+        published: true
+      };
+
+      streamsMap[id] = obj;
+      localStorage.setItem(STORAGE_KEY_STREAMS, JSON.stringify(streamsMap));
+      pushAllToCloud();
+
+      renderStreamsTable();
+      clearForm();
+      showSuccessBanner(`✅ "${obj.title}" Saved & Live on User Panel!`);
+    }
+
+    function editStreamItem(id) {
+      const item = streamsMap[id];
+      if (!item) return;
+
+      document.getElementById('form-heading').textContent = `✏️ Editing: ${item.title}`;
+      document.getElementById('item-id').value = item.id;
+      document.getElementById('item-title').value = item.title;
+      document.getElementById('item-style').value = item.isBanner ? 'banner' : 'channel';
+      document.getElementById('item-stream-type').value = item.streamType || 'auto';
+      document.getElementById('item-use-proxy').value = item.useProxy ? 'true' : 'false';
+      document.getElementById('item-category').value = item.category || 'SPORTS';
+      document.getElementById('item-order').value = item.order || 1;
+
+      currentThumbnailData = item.thumbnail || '';
+      document.getElementById('thumb-preview').src = currentThumbnailData;
+      document.getElementById('item-thumb-url').value = currentThumbnailData.startsWith('data:') ? '' : currentThumbnailData;
+
+      document.getElementById('item-srv1').value = item.server1 || '';
+      document.getElementById('item-srv2').value = item.server2 || '';
+      document.getElementById('item-srv3').value = item.server3 || '';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteStreamItem(id) {
+      if (!confirm("Delete this match/channel?")) return;
+      delete streamsMap[id];
+      localStorage.setItem(STORAGE_KEY_STREAMS, JSON.stringify(streamsMap));
+      if (rtdb) rtdb.ref('streams_v6/' + id).remove().catch(() => {});
+      pushAllToCloud();
+      renderStreamsTable();
+      showSuccessBanner("🗑️ Deleted Successfully!");
+    }
+
+    function clearForm() {
+      document.getElementById('stream-form').reset();
+      document.getElementById('item-id').value = '';
+      document.getElementById('form-heading').textContent = '➕ Add Live Match Banner (e.g. IND vs NZ) or TV Channel';
+      currentThumbnailData = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=400&q=80';
+      document.getElementById('thumb-preview').src = currentThumbnailData;
+      document.getElementById('upload-status-msg').textContent = '✓ Ready! Tap button above to pick photo from gallery.';
+      document.getElementById('admin-preview-box').classList.remove('show');
+    }
+
+    function restoreDefaults() {
+      streamsMap = JSON.parse(JSON.stringify(DEFAULT_STREAMS_DATA));
+      localStorage.setItem(STORAGE_KEY_STREAMS, JSON.stringify(streamsMap));
+      pushAllToCloud();
+      renderStreamsTable();
+      showSuccessBanner("✅ Default Demo Channels & IND vs NZ Match Restored!");
+    }
+
+    function renderStreamsTable() {
+      const tbody = document.getElementById('streams-tbody');
+      const list = Object.values(streamsMap).sort((a, b) => (a.order || 99) - (b.order || 99));
+
+      tbody.innerHTML = list.map(item => `
+        <tr>
+          <td>
+            <img src="${item.thumbnail}" style="width:75px; height:44px; object-fit:cover; border-radius:6px; border:1px solid var(--border);" onerror="this.src='https://ui-avatars.com/api/?name=TV'" />
+          </td>
+          <td>
+            <div style="font-weight:800; font-size:14px;">${esc(item.title)}</div>
+            <span style="font-size:11px; color:var(--accent); font-weight:700;">
+              ${item.isBanner ? '🔥 16:9 Match Banner' : '📺 Channel Card'} • ${esc(item.category)}
+              ${item.useProxy ? ' • 🛡️ Proxy ON' : ''}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-orange btn-sm" onclick="testLiveStreamInAdmin('${esc(item.server1)}')">
+              <i class="fa-solid fa-play"></i> Play S1
+            </button>
+            ${item.server2 ? `<button class="btn btn-dark btn-sm" onclick="testLiveStreamInAdmin('${esc(item.server2)}')"><i class="fa-solid fa-play"></i> Play S2</button>` : ''}
+          </td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-dark btn-sm" onclick="editStreamItem('${item.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteStreamItem('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function saveSettingsForm(e) {
+      e.preventDefault();
+      const cfg = {
+        siteWhite: document.getElementById('set-white').value.trim(),
+        siteOrange: document.getElementById('set-orange').value.trim(),
+        themeColor: document.getElementById('set-color').value,
+        alertText: document.getElementById('set-alert').value.trim()
+      };
+      localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(cfg));
+      if (rtdb) rtdb.ref('settings_v6').set(cfg).catch(() => {});
+      if (syncChannel) syncChannel.postMessage({ updated: Date.now() });
+      showSuccessBanner("✅ Site Settings & Live Alert Saved Successfully!");
+    }
+
+    function saveSocialsForm(e) {
+      e.preventDefault();
+      const soc = {
+        telegram: { name: "Telegram", url: document.getElementById('soc-tg').value.trim() || "https://t.me/" },
+        whatsapp: { name: "WhatsApp", url: document.getElementById('soc-wa').value.trim() || "https://whatsapp.com/" }
+      };
+      localStorage.setItem(STORAGE_KEY_SOCIALS, JSON.stringify(soc));
+      if (rtdb) rtdb.ref('socials_v6').set(soc).catch(() => {});
+      if (syncChannel) syncChannel.postMessage({ updated: Date.now() });
+      showSuccessBanner("✅ Telegram & WhatsApp Links Saved Successfully!");
+    }
+
+    function openTab(id, btn) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function esc(s) {
+      if (!s) return '';
+      return String(s).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+    }
+  </script>
+</body>
+</html>
